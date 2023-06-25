@@ -41,20 +41,20 @@ table {
         </caption>
         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
             <tr>
-                <th scope="col" class="px-6 py-3">
-                    Anonymous
+                <th scope="col" class="px-6 py-3 hover:text-white">
+                    <a href="{{url_for('scrape')}}?type=anon&download">Anonymous (Click to Download List)</a>
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    SSL
+                <th scope="col" class="px-6 py-3 hover:text-white">
+                    <a href="{{url_for('scrape')}}?type=ssl&download">SSL (Click to Download List)</a>
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    UK
+                <th scope="col" class="px-6 py-3 hover:text-white">
+                    <a href="{{url_for('scrape')}}?type=uk&download">UK (Click to Download List)</a>
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    US
+                <th scope="col" class="px-6 py-3 hover:text-white">
+                    <a href="{{url_for('scrape')}}?type=us&download">US (Click to Download List)</a>
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Latest
+                <th scope="col" class="px-6 py-3 hover:text-white">
+                    <a href="{{url_for('scrape')}}?type=latest&download">Latest (Click to Download List)</a>
                 </th>
             </tr>
         </thead>

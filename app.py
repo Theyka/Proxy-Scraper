@@ -1,4 +1,4 @@
-from quart import Quart, render_template, request, jsonify
+from quart import Quart, render_template, request, jsonify, Response
 from hypercorn.config import Config
 from hypercorn.asyncio import serve
 from dotenv import load_dotenv
@@ -22,6 +22,7 @@ def max(*args):
 async def make_request(session, url):
     response = await session.get(url, timeout=3)
     return await response.text()
+
 
 env = Environment()
 env.filters['max'] = max
@@ -50,9 +51,7 @@ async def index():
     anon_proxy, ssl_proxy, uk_proxy, us_proxy, latest_proxy = proxies
 
     return await render_template("index.html", anon_proxy=anon_proxy, ssl_proxy=ssl_proxy, uk_proxy=uk_proxy,
-                                     us_proxy=us_proxy, latest_proxy=latest_proxy)
-
-
+                                 us_proxy=us_proxy, latest_proxy=latest_proxy)
 
 
 @app.route("/api")
@@ -76,11 +75,18 @@ async def scrape():
                             'time': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(request_url, verify_ssl=True, headers={'Referer': 'https://google.com.tr', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'}) as response:
+            async with session.get(request_url, verify_ssl=True, headers={'Referer': 'https://google.com.tr',
+                                                                          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'}) as response:
                 soup = BeautifulSoup(await response.text(), 'html.parser')
                 proxy_list_text = soup.find('textarea').text
                 proxy_list = proxy_list_text[proxy_list_text.rfind('UTC.'):]
-                return proxy_list.replace("UTC.", "")
+                if request.args.get('download') == "":
+                    return Response(
+                        proxy_list.replace("UTC.", ""),
+                        mimetype='text/plain',
+                        headers={'Content-disposition': f'attachment; filename={request.args.get("type")}_list.txt'})
+                else:
+                    return proxy_list.replace("UTC.", "")
 
 if __name__ == "__main__":
     config = Config()
