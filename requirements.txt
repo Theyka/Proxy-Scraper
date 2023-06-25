@@ -1,0 +1,8 @@
+quart
+hypercorn
+python-dotenv
+beautifulsoup4
+jinja2
+aiohttp
+asyncio
+requests
